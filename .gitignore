@@ -1,0 +1,12 @@
+# Environment files
+.env
+
+# HTTP Client test
+/restClientTest
+
+# Executables
+*.exe
+
+# Editor
+.vs_code/
+.idea/
