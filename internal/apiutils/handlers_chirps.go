@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"sort"
 	"strings"
 	"time"
 
@@ -101,15 +102,13 @@ func (api *ApiUtils) HandlerCreateChirp(w http.ResponseWriter, r *http.Request) 
 }
 
 // Handler for GET /api/users
-// If author_id is passed as a query parameter, returns all the chirps from that user in a JSON response
-// Otherwise, returns all chirps
+// Returns all chirps or filters by user_id if one is provided as query parameter
 func (api *ApiUtils) HandlerGetChirps(w http.ResponseWriter, r *http.Request) {
 	var queryResult []database.Chirp
 	var userId uuid.UUID
 	var err error
 
-	// Getting query arguments
-	// Parsing string to UUID if a string is passed as argument
+	// Handling author_id request parameter
 	authorId := r.URL.Query().Get("author_id")
 	if authorId != "" {
 		userId, err = uuid.Parse(authorId)
@@ -143,6 +142,14 @@ func (api *ApiUtils) HandlerGetChirps(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
+	// Sorting if a valid sort argument is passed
+	if r.URL.Query().Get("sort") == "desc" {
+		sort.Slice(payload, func(a, b int) bool {
+			return payload[a].CreatedAt.After(payload[b].CreatedAt)
+		})
+	}
+
+	// Response OK
 	RespondWithJSON(w, 200, payload)
 }
 
