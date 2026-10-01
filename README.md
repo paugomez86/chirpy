@@ -78,7 +78,6 @@ The server will start listening on `http://localhost:8080`.
 | `POST`    | `/api/refresh`        | Receive a new access token    | Bearer Token      | None              |
 | `POST`    | `/api/revoke`         | Revokes a refresh token       | Bearer Token      | None              |
 
+## File Server
 
-## License
-
-This project is licensed under the MIT License.
+This API also provides a standard file server located at `./assets/` and served on `http://localhost:8080/app/assets/`.
