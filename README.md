@@ -81,3 +81,7 @@ The server will start listening on `http://localhost:8080`.
 ## File Server
 
 This API also provides a standard file server located at `./assets/` and served on `http://localhost:8080/app/assets/`.
+
+## License
+
+This project is licensed under the MIT License.
