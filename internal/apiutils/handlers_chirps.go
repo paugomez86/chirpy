@@ -189,46 +189,6 @@ func (api *ApiUtils) HandlerGetChirpFromId(w http.ResponseWriter, r *http.Reques
 	RespondWithJSON(w, 200, payload)
 }
 
-// Handler for GET /api/users/{ID}/chirps
-// Returns the given user's id chirps
-func (api *ApiUtils) HandlerGetChirpsFromUser(w http.ResponseWriter, r *http.Request) {
-	var userId uuid.UUID
-
-	// Parsing user ID arg
-	userId, err := uuid.Parse(r.PathValue("userId"))
-	if err != nil {
-		RespondWithError(w, 400, fmt.Sprintf("Invalid ID provided: %s\n", err))
-		return
-	}
-
-	// Querying
-	queryResult, err := api.DbQueries.GetChirpsFromUser(r.Context(), userId)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			RespondWithError(w, 404, "Query returned no rows\n")
-			return
-		}
-		RespondWithError(w, 500, fmt.Sprintf("Error fetching chirps: %s\n", err))
-		return
-	}
-
-	// Mapping database result to payload
-	var payload []chirp
-
-	for _, item := range queryResult {
-		payload = append(payload, chirp{
-			ID:        item.ID,
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
-			Body:      item.Body,
-			UserID:    item.UserID,
-		})
-	}
-
-	// Response OK
-	RespondWithJSON(w, 200, payload)
-}
-
 // DELETE /chirps/{chirpID}
 func (api *ApiUtils) HandlerDeleteChirp(w http.ResponseWriter, r *http.Request) {
 	var userId uuid.UUID

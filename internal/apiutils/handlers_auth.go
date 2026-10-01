@@ -16,7 +16,7 @@ type accessToken struct {
 }
 
 // Handler for POST /api/refresh
-// TODO
+// Checks refresh token is valid and generates a new access token for the provided user
 func (api *ApiUtils) HandlerRefresh(w http.ResponseWriter, r *http.Request) {
 	// Getting bearer token from headers
 	refreshTokenString, err := auth.GetBearerToken(r.Header)
@@ -49,12 +49,14 @@ func (api *ApiUtils) HandlerRefresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Getting the owner of the refresh token
 	userQueryResult, err := api.DbQueries.GetUserFromRefreshToken(r.Context(), refreshTokenString)
 	if err != nil {
 		RespondWithError(w, 500, fmt.Sprintf("Error fetching user from refresh token: %v", err))
 		return
 	}
 
+	// Generating new access token
 	newAccessToken, err := auth.MakeJWT(userQueryResult.ID, api.Cfg.JwtSecret, api.Cfg.AccessTokenDuration)
 	if err != nil {
 		RespondWithError(w, 500, fmt.Sprintf("Error generating JWT: %s", err))

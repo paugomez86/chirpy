@@ -47,7 +47,6 @@ func main() {
 	mux.Handle("POST /api/chirps", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerCreateChirp)))
 	mux.Handle("GET /api/chirps/{chirpId}", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerGetChirpFromId)))
 	mux.Handle("DELETE /api/chirps/{chirpId}", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerDeleteChirp)))
-	mux.Handle("GET /api/users/{userId}/chirps", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerGetChirpsFromUser)))
 
 	mux.Handle("GET /api/users", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerGetUsers)))
 	mux.Handle("POST /api/users", apiutils.MiddlewareLog(http.HandlerFunc(api.HandlerCreateUser)))
@@ -60,7 +59,7 @@ func main() {
 
 	// Initializing server
 	server = &http.Server{
-		Addr:         ":8080",
+		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
 		Handler:      mux,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
